@@ -1,7 +1,7 @@
 import { Carousel } from "flowbite-react";
 
 import CodeFlicks from "../assets/projetcs/codeflicks.webp"; 
-import CodeFlicks2 from "/assets/projetcs/CodeFlicks2.webp";
+import CodeFlicks2 from "../assets/projetcs/CodeFlicks2.webp";
 import CodeFlicks3 from "../assets/projetcs/codeflicks3.webp";
 import DevJoseStore from "../assets/projetcs/devstore.webp";
 import Coffe from "../assets/projetcs/coffe.webp";
