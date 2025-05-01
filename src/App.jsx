@@ -9,7 +9,6 @@ import { Projects } from "./components/Projects";
 import { User } from "./icons/User";
 import { TimeLine } from "./components/TimeLine";
 import { Brief } from "./icons/Brief";
-
 import "./App.css";
 export const App = () => {
   return (
