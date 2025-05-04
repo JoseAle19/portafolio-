@@ -10,9 +10,11 @@ import { User } from "./icons/User";
 import { TimeLine } from "./components/TimeLine";
 import { Brief } from "./icons/Brief";
 import "./App.css";
+import GeminiBot from "./components/GeminiBot";
 export const App = () => {
   return (
     <>
+
       <main className="px-10  ">
         <SectionContainer id={"top"} styles={"py-24 xl:py-[15rem]"}>
           <div className="flex flex-row text-balance gap-x-2   pb-3">
@@ -113,7 +115,7 @@ export const App = () => {
           </div>
         </SectionContainer>
         
-
+        <GeminiBot/>
 
       </main>
     </>

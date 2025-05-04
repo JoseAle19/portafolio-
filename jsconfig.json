@@ -1,14 +1,20 @@
 {
-    "compilerOptions": {
-      "target": "ES6",
-      "module": "ESNext",
-      "jsx": "react-jsx",
-      "moduleResolution": "node",
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["src/*"]
-      }
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@hooks/*": ["src/hooks/*"]  // 👈 Añade esto específicamente para hooks
     },
-    "include": ["src"]
-  }
-  
+    "checkJs": true,  // 👈 Habilita verificación de JS
+    "strict": false   // 👈 Mantén false si no quieres TypeScript-like checks
+  },
+  "include": [
+    "src/**/*",
+    "vite.config.js"  // 👈 Incluye archivos de configuración
+  ],
+  "exclude": ["node_modules"]
+}

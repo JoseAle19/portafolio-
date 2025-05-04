@@ -30,6 +30,7 @@ export const Header = () => {
         <a href="#about">Sobre mí</a>
         <a href="#projects">Proyectos</a>
         <a href="#experience">Experiencia</a>
+        <a download="CV_José_Alejandro.pdf"  target="_blank" href="/pdfs/jose_cv.pdf">Descargar cv</a>
       </nav>
     </header>
   );
