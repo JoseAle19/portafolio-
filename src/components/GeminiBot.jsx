@@ -14,10 +14,10 @@ const GeminiBot = () => {
   };
   const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
   const SYSTEM_PROMPT = `
-Eres "José Alejandro Cruz Pérez", desarrollador full-stack con 4+ años de experiencia en Flutter, React.js y Node.js.
-Responderás preguntas **en primera persona** (como si fueras yo), basándote exclusivamente en mi información profesional:
+Eres "José Alejandro Cruz Pérez", desarrollador full-stack con 4+ años de experiencia en Flutter, React.js y Node.js, jose a podido participar en proyectos para peru y colombia donde ha usado tecnologias nuevas pero aprender super rapido ademas de realizar cursos de node js, flutter + gemini etc.
+Responderás preguntas **en primera persona** (como si fueras yo), basándote exclusivamente en mi información profesional ademas de enfatizar los años de estudio que haz cursado y la carrera :
 
-### **Perfil Profesional**:
+### **Perfil Profesional**: Ingeniero en sistemas computacionales y 
 Desarrollador de software con más de 4 años de experiencia en el desarrollo web y móvil, especializado en Flutter. Capaz de diseñar, construir y mantener aplicaciones completas utilizando tecnologías modernas como React.js, Node.js, y bases de datos como SQL Server. Apasionado por el aprendizaje continuo y la colaboración en equipos multidisciplinarios. :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
 
 ### **Habilidades Técnicas**:
@@ -25,7 +25,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
 - 🛠️ Frameworks/Librerías: Flutter (avanzado), React.js, Node.js, Express.js.
 - ☁️ Servicios: Firebase (Auth, Firestore, Storage).
 - 🗃️ Bases de datos: SQL Server, MySQL.
-- 🔧 Herramientas: Git, Postman, Figma.
+- 🔧 Herramientas: Git, Postman, Figma, Ia.
 - ⚙️ CMS: WordPress. :contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}
 - 🚀 Metodologías: Scrum, Agile. :contentReference[oaicite:4]{index=4}:contentReference[oaicite:5]{index=5}
 
@@ -50,6 +50,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
 
 ### **Proyectos Destacados**:
 - **Clone Spotify** en Flutter con Arquitectura Limpia y Firebase.  
+- **Chat con inteligencia artificial** en Flutter * gemini + nest js.  
 - **Fruti App**: tienda en línea demo en Flutter (Provider, carrito, favoritos).  
 - **Nitro App**: integración de Stripe y scraping de productos.  
 - **CodeFlicks**: plataforma de info de películas en React.js y Tailwind CSS.  
@@ -65,6 +66,9 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
 ### **Certificaciones**:
 - Flutter: De Cero a Experto – Udemy (Enero 2022 – Febrero 2022).  
 - Node.js Desde Cero – Udemy (Abril 2022 – Mayo 2022).  
+- Flutter + gemini – Devtalles (abril 2025 – mayo 2025).  
+- Introducción a Typecript – devtalles (junio 2025 – actualmente).
+- Angular 20 – devtalles (junio 2025 – actualmente).
 - Introducción a JavaScript – Udemy (Febrero 2022 – Marzo 2022). :contentReference[oaicite:18]{index=18}:contentReference[oaicite:19]{index=19}
 
 ### **Reconocimientos**:
@@ -82,6 +86,8 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
    - Para preguntas técnicas genéricas (ej.: "¿Qué es Node.js?"): responde brevemente y redirige a mi portafolio.
 4. **CV**:  
    - Si el usuario solicita mi CV, pide su dirección de correo y envía como adjunto mi archivo PDF de CV.
+4. **Resspuestas**:  
+   - Responde brevemente, se sutil y consiso siempre enfatiza la carrera universitaria
 
 ### **Ejemplos de respuestas**:
 - "Trabajé en Podermail desarrollando un acortador de URLs con React.js y Node.js."  
@@ -97,8 +103,8 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
   const [chatHistory, setChatHistory] = useState([
     { role: "system", content: SYSTEM_PROMPT },
   ]);
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async (message) => {
+    if (!message.trim()) return;
 
     const storedCount = parseInt(
       localStorage.getItem("preguntasCount") || "0",
@@ -119,10 +125,10 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
 
     setIsLoading(true);
 
-    if (/cv|currículum|curriculum/i.test(input)) {
+    if (/cv|currículum|curriculum/i.test(message)) {
       setMessages((prev) => [
         ...prev,
-        { text: input, sender: "user" },
+        { text: message, sender: "user" },
         {
           text: `Mi cv: <a download="CV_José_Alejandro.pdf"  target="_blank" href="/pdfs/jose_cv.pdf">Descargar</a>`,
           sender: "bot",
@@ -137,7 +143,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
     const newCount = storedCount + 1;
     localStorage.setItem("preguntasCount", newCount.toString());
 
-    const userMessage = { text: input, sender: "user" };
+    const userMessage = { text: message, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
@@ -150,7 +156,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
             role: msg.role === "model" ? "model" : "user",
             parts: [{ text: msg.content }],
           })),
-        { role: "user", parts: [{ text: input }] },
+        { role: "user", parts: [{ text: message }] },
       ];
 
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -158,14 +164,14 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
         history: geminiHistory,
       });
 
-      const result = await chat.sendMessage(input);
+      const result = await chat.sendMessage(message);
       const response = await result.response;
       const botMessage = { text: response.text(), sender: "bot" };
 
       setMessages((prev) => [...prev, botMessage]);
       setChatHistory((prev) => [
         ...prev.filter((msg) => msg.role !== "system"),
-        { role: "user", content: input },
+        { role: "user", content: message },
         { role: "model", content: response.text() },
       ]);
     } catch (error) {
@@ -185,7 +191,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
       position: "fixed",
       bottom: "20px",
       right: "20px",
-      width: "350px",
+      width: "450px",
       backgroundColor: "#1f2937",
       borderRadius: "12px",
       boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
@@ -280,7 +286,6 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
       color: "white",
       cursor: "pointer",
       fontSize: "18px",
-   
     },
   };
 
@@ -314,7 +319,7 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
           )}
         </button>
       ) : (
-        <div className="fixed bottom-6 right-6 w-[350px] bg-gray-800 rounded-xl shadow-xl overflow-hidden z-[1000] font-sans">
+        <div className="fixed bottom-6 right-6 w-[450px] bg-gray-800 rounded-xl shadow-xl overflow-hidden z-[1000] font-sans">
           <div className="flex justify-between items-center p-3 bg-gray-900 text-white">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
@@ -378,14 +383,15 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
               </button>
             </div>
           </div>
-  
+
           <div className="h-[400px] overflow-y-auto p-4 bg-gray-800">
             {messages.length === 0 && (
               <div className="bg-gray-700 text-white p-3 rounded-lg max-w-[80%] mb-3">
-                ¡Hola! Soy JoseIA, tu asistente virtual. ¿En qué puedo ayudarte hoy?
+                ¡Hola! Soy JoseIA, tu asistente virtual. ¿En qué puedo ayudarte
+                hoy?
               </div>
             )}
-  
+
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -402,69 +408,104 @@ Desarrollador de software con más de 4 años de experiencia en el desarrollo we
                 )}
               </div>
             ))}
-  
+
             {isLoading && (
               <div className="bg-gray-700 text-gray-300 p-3 rounded-lg max-w-[80%] mb-3 italic">
                 Pensando...
               </div>
             )}
-  
+
             <div ref={messagesEndRef} />
           </div>
-  
-          <div className="p-3 bg-gray-900 border-t border-gray-700 flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-              placeholder="Escribe tu mensaje..."
-              className="flex-1 bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg disabled:opacity-50 transition-colors"
+
+          <div className="p-3 bg-gray-900 border-t border-gray-700 flex gap-2 flex flex-col w-full ">
+            <div
+              className="w-full flex overflow-x-auto gap-2 py-3 scrollbar-modern"
+              style={{
+                scrollBehavior: "smooth", // Desplazamiento suave
+              }}
             >
-              {isLoading ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5 animate-spin"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-                  />
-                </svg>
-              )}
-            </button>
+              <button
+                onClick={() => {
+                  handleSendMessage("¿Qué tecnologías dominas?");
+                }}
+                className="flex-shrink-0 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors shadow-sm"
+              >
+                ¿Qué tecnologías dominas?
+              </button>
+              <button   onClick={()=>{
+                handleSendMessage('¿En qué tipo de proyectos has trabajado?');
+              }} className="flex-shrink-0 px-3 py-2 bg-black hover:bg-gray-800 text-white rounded-md text-sm font-medium transition-colors shadow-sm">
+                ¿En qué tipo de proyectos has trabajado?
+              </button>
+              <button   onClick={()=>{
+                handleSendMessage('¿Qué te apasiona del desarrollo?');
+              }} className="flex-shrink-0 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors shadow-sm">
+                ¿Qué te apasiona del desarrollo?
+              </button>
+              <button   onClick={()=>{
+                handleSendMessage('¿Cómo enfrentas los retos técnicos?');
+              }} className="flex-shrink-0 px-3 py-2 bg-black hover:bg-gray-800 text-white rounded-md text-sm font-medium transition-colors shadow-sm">
+                ¿Cómo enfrentas los retos técnicos?
+              </button>
+            </div>
+
+            <div className="w-full flex gap-1 ">
+              {" "}
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                placeholder="Escribe tu mensaje..."
+                className="flex-1 bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isLoading}
+              />
+              <button
+                onClick={() => {
+                  handleSendMessage(input);
+                }}
+                disabled={isLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg disabled:opacity-50 transition-colors"
+              >
+                {isLoading ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5 animate-spin"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
     </>
   );
-  
 };
 
 export default GeminiBot;
